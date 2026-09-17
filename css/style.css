@@ -1,0 +1,664 @@
+/* ============================================================
+   BudgetViz — style.css
+   Mobile-first · Navy / Warm Gold / Off-white / Subtle Green
+   Light & Dark mode via [data-theme] on <html>
+   ============================================================ */
+
+/* ── 1. DESIGN TOKENS ─────────────────────────────────────── */
+:root {
+  /* Brand palette */
+  --navy-900: #0d1b2a;
+  --navy-800: #1b2e44;
+  --navy-700: #1e3a5f;
+  --navy-600: #24497a;
+  --gold-500: #c9a84c;
+  --gold-400: #e0c06a;
+  --gold-300: #f0d98a;
+  --green-500: #2e7d52;
+  --green-400: #3aa06a;
+  --green-200: #c6edd8;
+  --red-500:   #c0392b;
+  --red-100:   #fdecea;
+
+  /* Neutral */
+  --white:     #ffffff;
+  --off-white: #f5f4f0;
+  --gray-100:  #ececec;
+  --gray-200:  #d8d8d8;
+  --gray-400:  #9a9a9a;
+  --gray-600:  #5a5a5a;
+  --gray-800:  #2a2a2a;
+
+  /* Semantic — Light theme (default) */
+  --bg-page:       var(--off-white);
+  --bg-card:       var(--white);
+  --bg-header:     var(--navy-900);
+  --bg-footer:     var(--navy-900);
+  --border-color:  var(--gray-200);
+  --text-primary:  var(--gray-800);
+  --text-secondary:var(--gray-600);
+  --text-muted:    var(--gray-400);
+  --text-on-dark:  var(--white);
+  --accent:        var(--navy-700);
+  --accent-hover:  var(--navy-600);
+  --highlight:     var(--gold-500);
+  --highlight-bg:  #fdf6e3;
+  --success:       var(--green-500);
+  --success-bg:    var(--green-200);
+  --danger:        var(--red-500);
+  --danger-bg:     var(--red-100);
+  --shadow-sm:     0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:     0 4px 16px rgba(0,0,0,.10);
+  --radius-sm:     8px;
+  --radius-md:     14px;
+  --radius-lg:     20px;
+  --transition:    .2s ease;
+
+  /* Category colours (used in JS too via CSS vars) */
+  --cat-food:      #e07b39;
+  --cat-transport: var(--navy-600);
+  --cat-fun:       var(--gold-500);
+
+  /* Typography */
+  --font-base: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Courier New', monospace;
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] {
+  --bg-page:       #0d1117;
+  --bg-card:       #161d27;
+  --bg-header:     #080d13;
+  --bg-footer:     #080d13;
+  --border-color:  #2a3a4e;
+  --text-primary:  #e8e8e8;
+  --text-secondary:#a0aec0;
+  --text-muted:    #5a6a7e;
+  --accent:        var(--gold-400);
+  --accent-hover:  var(--gold-300);
+  --highlight-bg:  #2a2210;
+  --success-bg:    #0d2a1d;
+  --danger-bg:     #2a100d;
+  --shadow-sm:     0 1px 4px rgba(0,0,0,.3);
+  --shadow-md:     0 4px 20px rgba(0,0,0,.4);
+}
+
+/* ── 2. RESET & BASE ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-base);
+  font-size: 15px;
+  line-height: 1.6;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background var(--transition), color var(--transition);
+}
+
+ul { list-style: none; }
+button { cursor: pointer; font-family: inherit; }
+input, select, button { font-size: inherit; }
+
+/* ── 3. UTILITY ────────────────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ── 4. HEADER ─────────────────────────────────────────────── */
+.app-header {
+  background: var(--bg-header);
+  color: var(--text-on-dark);
+  padding: 0 1.25rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.header-icon { font-size: 1.4rem; }
+
+.header-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--gold-400);
+}
+
+/* Theme toggle button */
+.btn-icon {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: background var(--transition), transform var(--transition);
+}
+.btn-icon:hover { background: rgba(255,255,255,.18); transform: rotate(20deg); }
+
+/* ── 5. MAIN LAYOUT ────────────────────────────────────────── */
+.app-main {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── 6. CARD BASE ──────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+/* ── 7. SUMMARY CARDS ──────────────────────────────────────── */
+.summary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.summary-card { padding: 1rem 1.25rem; }
+
+.card-label {
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+  margin-bottom: .35rem;
+}
+
+.card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Total card accent */
+.summary-card:first-child .card-value { color: var(--accent); }
+/* Transaction count */
+.summary-card:last-child .card-value  { color: var(--success); }
+
+.budget-limit-row {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--gold-500);
+  font-size: .8rem;
+  font-weight: 600;
+  padding: .15rem .4rem;
+  border-radius: 4px;
+  transition: background var(--transition);
+}
+.btn-text:hover { background: var(--highlight-bg); }
+
+.budget-warning {
+  margin-top: .4rem;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--danger);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .5; }
+}
+
+/* ── 8. BUDGET EDITOR ──────────────────────────────────────── */
+.budget-editor { padding: 1rem 1.25rem; }
+
+.budget-editor-row {
+  display: flex;
+  gap: .6rem;
+  margin-top: .5rem;
+  flex-wrap: wrap;
+}
+
+.budget-editor-row .form-control { flex: 1; min-width: 140px; }
+
+/* ── 9. TWO-COLUMN GRID ────────────────────────────────────── */
+.grid-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* ── 10. FORM ──────────────────────────────────────────────── */
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  padding-bottom: .5rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.form-card { display: flex; flex-direction: column; }
+
+.form-group { margin-bottom: .9rem; }
+
+.form-label {
+  display: block;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: .35rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: .6rem .85rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+  outline: none;
+}
+
+.form-control::placeholder { color: var(--text-muted); }
+
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, .15);
+}
+
+[data-theme="dark"] .form-control:focus {
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, .18);
+}
+
+.form-control.error { border-color: var(--danger); }
+
+.field-error {
+  font-size: .78rem;
+  color: var(--danger);
+  margin-top: .3rem;
+}
+
+/* Select arrow */
+select.form-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a9a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right .85rem center;
+  padding-right: 2.2rem;
+}
+
+/* ── 11. BUTTONS ───────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding: .6rem 1.2rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-weight: 600;
+  transition: background var(--transition), transform var(--transition), opacity var(--transition);
+}
+.btn:active { transform: scale(.97); }
+
+.btn-primary {
+  background: var(--navy-700);
+  color: var(--white);
+}
+.btn-primary:hover { background: var(--navy-600); }
+
+[data-theme="dark"] .btn-primary {
+  background: var(--gold-500);
+  color: var(--navy-900);
+}
+[data-theme="dark"] .btn-primary:hover { background: var(--gold-400); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border-color);
+}
+.btn-ghost:hover { background: var(--bg-page); }
+
+.btn-full { width: 100%; margin-top: .25rem; }
+
+/* Delete button (inline in list) */
+.btn-delete {
+  background: transparent;
+  border: 1.5px solid transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: .3rem .55rem;
+  font-size: .85rem;
+  transition: color var(--transition), border-color var(--transition), background var(--transition);
+  flex-shrink: 0;
+}
+.btn-delete:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+/* ── 12. CHART ─────────────────────────────────────────────── */
+.chart-card { display: flex; flex-direction: column; }
+
+.chart-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  margin-bottom: .75rem;
+}
+
+#spendingChart { max-height: 240px; }
+
+.chart-empty {
+  position: absolute;
+  font-size: .85rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 1rem;
+  pointer-events: none;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: center;
+  margin-top: .25rem;
+}
+
+.legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .78rem;
+  font-weight: 600;
+  padding: .25rem .65rem;
+  border-radius: 999px;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── 13. TRANSACTION LIST ──────────────────────────────────── */
+.list-card { padding: 1.25rem; }
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+
+.list-header .section-title { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+
+/* Sort controls */
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  flex-wrap: wrap;
+}
+
+.sort-label {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.btn-sort {
+  background: transparent;
+  border: 1.5px solid var(--border-color);
+  border-radius: 999px;
+  padding: .25rem .75rem;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.btn-sort:hover { background: var(--bg-page); }
+.btn-sort.active {
+  background: var(--navy-700);
+  color: var(--white);
+  border-color: var(--navy-700);
+}
+[data-theme="dark"] .btn-sort.active {
+  background: var(--gold-500);
+  color: var(--navy-900);
+  border-color: var(--gold-500);
+}
+
+/* Scrollable list */
+.tx-list {
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: .25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+/* Custom scrollbar */
+.tx-list::-webkit-scrollbar { width: 5px; }
+.tx-list::-webkit-scrollbar-track { background: transparent; }
+.tx-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 99px; }
+
+/* Transaction item */
+.tx-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .65rem .85rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-page);
+  transition: border-color var(--transition), background var(--transition);
+  animation: slideIn .2s ease;
+}
+.tx-item:hover { border-color: var(--accent); }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Over-limit highlight */
+.tx-item.over-limit {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.tx-left {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  min-width: 0;
+}
+
+.tx-emoji { font-size: 1.1rem; flex-shrink: 0; }
+
+.tx-info { min-width: 0; }
+
+.tx-name {
+  font-weight: 600;
+  font-size: .9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.tx-meta {
+  font-size: .75rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: .4rem;
+  align-items: center;
+}
+
+.tx-cat-badge {
+  display: inline-block;
+  padding: .1rem .45rem;
+  border-radius: 999px;
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* Category badge colours */
+.badge-food      { background: #fde8d6; color: #a04a10; }
+.badge-transport { background: #dbe8f8; color: #1e3a5f; }
+.badge-fun       { background: #fdf6e3; color: #7a5c10; }
+
+[data-theme="dark"] .badge-food      { background: #3a1c08; color: #f0a06a; }
+[data-theme="dark"] .badge-transport { background: #0d1e38; color: #7aadd4; }
+[data-theme="dark"] .badge-fun       { background: #2a2008; color: #e0c06a; }
+
+.tx-right {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  flex-shrink: 0;
+}
+
+.tx-amount {
+  font-weight: 700;
+  font-size: .95rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ── 14. LIST EMPTY STATE ──────────────────────────────────── */
+.list-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-muted);
+  font-size: .9rem;
+}
+
+/* ── 15. MONTHLY SUMMARY TABLE ─────────────────────────────── */
+.monthly-card {}
+
+.monthly-table-wrapper {
+  overflow-x: auto;
+  margin-top: .25rem;
+}
+
+.monthly-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .88rem;
+}
+
+.monthly-table th {
+  text-align: left;
+  padding: .55rem .75rem;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.monthly-table td {
+  padding: .6rem .75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.monthly-table tbody tr:last-child td { border-bottom: none; }
+
+.monthly-table tbody tr:hover td { background: var(--bg-page); }
+
+.monthly-table td:first-child { font-weight: 600; color: var(--text-secondary); }
+.monthly-table td:last-child  { font-weight: 700; color: var(--accent); }
+
+/* ── 16. FOOTER ────────────────────────────────────────────── */
+.app-footer {
+  background: var(--bg-footer);
+  color: rgba(255,255,255,.45);
+  text-align: center;
+  padding: .9rem 1rem;
+  font-size: .75rem;
+  letter-spacing: .03em;
+}
+
+/* ── 17. RESPONSIVE ────────────────────────────────────────── */
+
+/* Tablet (≥ 600px) — already fine with grid-two */
+@media (max-width: 720px) {
+  .grid-two { grid-template-columns: 1fr; }
+
+  .summary-row { grid-template-columns: 1fr 1fr; }
+  .summary-row .summary-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .list-header { flex-direction: column; align-items: flex-start; }
+  .sort-controls { width: 100%; }
+}
+
+@media (max-width: 440px) {
+  .summary-row { grid-template-columns: 1fr; }
+  .summary-row .summary-card:last-child { grid-column: auto; }
+
+  .card-value { font-size: 1.25rem; }
+
+  .tx-name { max-width: 130px; }
+
+  .app-main { padding: 1rem .75rem 2rem; }
+}

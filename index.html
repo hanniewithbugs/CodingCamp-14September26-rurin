@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense & Budget Visualizer</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="header-icon">💰</span>
+        <h1 class="header-title">BudgetViz</h1>
+      </div>
+      <button id="themeToggle" class="btn-icon" aria-label="Toggle dark/light mode" title="Toggle theme">
+        <span class="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== MAIN LAYOUT ===== -->
+  <main class="app-main">
+
+    <!-- ── TOP SUMMARY CARDS ── -->
+    <section class="summary-row" aria-label="Spending summary">
+
+      <div class="card summary-card">
+        <p class="card-label">Total Spending</p>
+        <p class="card-value" id="totalSpending">Rp 0</p>
+      </div>
+
+      <div class="card summary-card">
+        <p class="card-label">Monthly Budget Limit</p>
+        <div class="budget-limit-row">
+          <p class="card-value" id="budgetLimitDisplay">Rp 0</p>
+          <button class="btn-text" id="editBudgetBtn" aria-label="Edit budget limit">Edit</button>
+        </div>
+        <p class="budget-warning hidden" id="budgetWarning">⚠️ Over budget!</p>
+      </div>
+
+      <div class="card summary-card">
+        <p class="card-label">Transactions</p>
+        <p class="card-value" id="txCount">0</p>
+      </div>
+
+    </section>
+
+    <!-- ── BUDGET LIMIT EDITOR (inline, hidden by default) ── -->
+    <div class="card budget-editor hidden" id="budgetEditor">
+      <label class="form-label" for="budgetInput">Set Monthly Budget Limit (Rp)</label>
+      <div class="budget-editor-row">
+        <input type="number" id="budgetInput" class="form-control" placeholder="e.g. 500000" min="0" />
+        <button class="btn btn-primary" id="saveBudgetBtn">Save</button>
+        <button class="btn btn-ghost" id="cancelBudgetBtn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- ── TWO-COLUMN GRID: form + chart ── -->
+    <div class="grid-two">
+
+      <!-- ADD EXPENSE FORM -->
+      <section class="card form-card" aria-label="Add expense">
+        <h2 class="section-title">Add Expense</h2>
+        <form id="expenseForm" novalidate>
+
+          <div class="form-group">
+            <label class="form-label" for="itemName">Item Name</label>
+            <input
+              type="text"
+              id="itemName"
+              class="form-control"
+              placeholder="e.g. Lunch, Grab ride…"
+              autocomplete="off"
+              maxlength="60"
+            />
+            <p class="field-error hidden" id="itemNameError">Please enter an item name.</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="amount">Amount (Rp)</label>
+            <input
+              type="number"
+              id="amount"
+              class="form-control"
+              placeholder="e.g. 25000"
+              min="1"
+            />
+            <p class="field-error hidden" id="amountError">Please enter a valid amount greater than 0.</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="category">Category</label>
+            <select id="category" class="form-control">
+              <option value="">— Select category —</option>
+              <option value="Food">🍜 Food</option>
+              <option value="Transport">🚌 Transport</option>
+              <option value="Fun">🎮 Fun</option>
+            </select>
+            <p class="field-error hidden" id="categoryError">Please select a category.</p>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full">Add Expense</button>
+        </form>
+      </section>
+
+      <!-- SPENDING CHART -->
+      <section class="card chart-card" aria-label="Spending chart">
+        <h2 class="section-title">Spending by Category</h2>
+        <div class="chart-wrapper">
+          <canvas id="spendingChart" aria-label="Doughnut chart of spending by category" role="img"></canvas>
+          <p class="chart-empty" id="chartEmpty">No data yet — add an expense to see the chart.</p>
+        </div>
+        <!-- Category legend pills -->
+        <div class="chart-legend" id="chartLegend" aria-label="Chart legend"></div>
+      </section>
+
+    </div><!-- /grid-two -->
+
+    <!-- ── TRANSACTION LIST ── -->
+    <section class="card list-card" aria-label="Transaction list">
+      <div class="list-header">
+        <h2 class="section-title">Transactions</h2>
+
+        <!-- Sort controls -->
+        <div class="sort-controls" role="group" aria-label="Sort transactions">
+          <span class="sort-label">Sort:</span>
+          <button class="btn-sort active" data-sort="date" id="sortDate">Date</button>
+          <button class="btn-sort" data-sort="amount-desc" id="sortAmountDesc">Amount ↓</button>
+          <button class="btn-sort" data-sort="amount-asc" id="sortAmountAsc">Amount ↑</button>
+          <button class="btn-sort" data-sort="category" id="sortCategory">Category</button>
+        </div>
+      </div>
+
+      <!-- Scrollable list -->
+      <ul class="tx-list" id="txList" aria-label="Transaction items" aria-live="polite">
+        <!-- Populated by JS -->
+      </ul>
+
+      <!-- Empty state -->
+      <div class="list-empty hidden" id="listEmpty">
+        <p>No transactions yet. Add your first expense above! 👆</p>
+      </div>
+    </section>
+
+    <!-- ── MONTHLY SUMMARY ── -->
+    <section class="card monthly-card" aria-label="Monthly summary">
+      <h2 class="section-title">Monthly Summary</h2>
+      <div class="monthly-table-wrapper">
+        <table class="monthly-table" id="monthlyTable" aria-label="Monthly spending totals">
+          <thead>
+            <tr>
+              <th scope="col">Month</th>
+              <th scope="col">Food</th>
+              <th scope="col">Transport</th>
+              <th scope="col">Fun</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody id="monthlyBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+        <div class="list-empty hidden" id="monthlyEmpty">
+          <p>No data yet.</p>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- /app-main -->
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <p>BudgetViz · Built for CodingCamp 2026 · Data stored locally in your browser</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
